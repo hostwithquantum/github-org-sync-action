@@ -51,7 +51,8 @@ All releases are done using the amazing `goreleaser` in a release workflow in th
 You may download a release for Mac, Linux or Windows here:
  - https://github.com/hostwithquantum/github-org-sync-action/releases
 
-To use the Docker image, please follow this link:
+To use the Docker image, please follow one of these links:
+ - https://quay.io/repository/hostwithquantum/github-org-sync?tab=tags
  - https://github.com/hostwithquantum/github-org-sync-action/packages
 
 Otherwise: `make dev` to build a snapshot.
