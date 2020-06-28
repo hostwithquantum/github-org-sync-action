@@ -1,0 +1,10 @@
+# Used for commits
+export GITHUB_USER=""
+export GITHUB_EMAIL=""
+# Used to authenticate (scope: repo)
+export GITHUB_ACCESS_TOKEN=
+# The org and the skeleton
+export GITHUB_ORG=hostwithquantum
+export GITHUB_SKELETON="ansible-skeleton"
+# A space separated list of repositories
+export GITHUB_REPOS="ansible-weave"
