@@ -31,6 +31,10 @@ dockers:
   - "docker.pkg.github.com/hostwithquantum/github-org-sync-action/github-org-sync:v{{ .Major }}"
   - "docker.pkg.github.com/hostwithquantum/github-org-sync-action/github-org-sync:v{{ .Major }}.{{ .Minor }}"
   - "docker.pkg.github.com/hostwithquantum/github-org-sync-action/github-org-sync:latest"
+  - "quay.io/hostwithquantum/github-org-sync:v{{ .Tag }}"
+  - "quay.io/hostwithquantum/github-org-sync:v{{ .Major }}"
+  - "quay.io/hostwithquantum/github-org-sync:v{{ .Major }}.{{ .Minor }}"
+  - "quay.io/hostwithquantum/github-org-sync:latest"
 snapshot:
   name_template: "{{ .Tag }}-next"
 changelog:
