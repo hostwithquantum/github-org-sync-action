@@ -7,9 +7,6 @@ import (
 
 	log "github.com/sirupsen/logrus"
 
-	"github.com/hostwithquantum/github-org-sync-action/user"
-	"github.com/hostwithquantum/github-org-sync-action/utils"
-
 	"github.com/go-git/go-git/v5"
 	"github.com/go-git/go-git/v5/config"
 	"github.com/go-git/go-git/v5/plumbing"
@@ -21,13 +18,13 @@ import (
 type Repo struct {
 	org    string
 	name   string
-	user   user.CurrentUser
+	user   CurrentUser
 	target string
 	repo   *git.Repository
 }
 
 // NewRepo ...
-func NewRepo(org string, name string, user user.CurrentUser, tmpDirectory string) Repo {
+func NewRepo(org string, name string, user CurrentUser, tmpDirectory string) Repo {
 
 	cloneDirectory := fmt.Sprintf("%s/%s", tmpDirectory, name)
 
@@ -44,10 +41,10 @@ func (r Repo) CommitAndPush(message string, branch string) {
 	branchRef := plumbing.ReferenceName(fmt.Sprintf("refs/heads/%s", branch))
 
 	worktree, err := r.repo.Worktree()
-	utils.CheckIfError(err)
+	CheckIfError(err)
 
 	status, err := worktree.Status()
-	utils.CheckIfError(err)
+	CheckIfError(err)
 
 	log.Debugf("Current status is: %v", status.IsClean())
 	if status.IsClean() {
@@ -57,7 +54,7 @@ func (r Repo) CommitAndPush(message string, branch string) {
 
 	for file := range status {
 		hash, err := worktree.Add(file)
-		utils.CheckIfError(err)
+		CheckIfError(err)
 
 		log.Debugf("Staged file: %s", file)
 
@@ -72,7 +69,7 @@ func (r Repo) CommitAndPush(message string, branch string) {
 			When:  time.Now(),
 		},
 	})
-	utils.CheckIfError(err)
+	CheckIfError(err)
 	log.Debugf("Created commit: %s", commit.String())
 
 	err = r.repo.Push(&git.PushOptions{
@@ -83,20 +80,20 @@ func (r Repo) CommitAndPush(message string, branch string) {
 			config.RefSpec(branchRef + ":" + branchRef),
 		},
 	})
-	utils.CheckIfError(err)
+	CheckIfError(err)
 	log.Debugf("Pushed branch: %s!", branchRef)
 }
 
 // CreateBranch ...
 func (r Repo) CreateBranch(branch string) {
 	worktree, err := r.repo.Worktree()
-	utils.CheckIfError(err)
+	CheckIfError(err)
 
 	err = worktree.Checkout(&git.CheckoutOptions{
 		Branch: plumbing.NewBranchReferenceName(branch),
 		Create: true,
 	})
-	utils.CheckIfError(err)
+	CheckIfError(err)
 
 	log.Debugf("Created new branch and switched workspace")
 }
@@ -104,7 +101,7 @@ func (r Repo) CreateBranch(branch string) {
 // GetDefaultBranch ...
 func (r Repo) GetDefaultBranch() string {
 	ref, err := r.repo.Head()
-	utils.CheckIfError(err)
+	CheckIfError(err)
 
 	return ref.Name().Short()
 }
@@ -112,19 +109,18 @@ func (r Repo) GetDefaultBranch() string {
 // GetLastCommit ...
 func (r Repo) GetLastCommit() plumbing.Hash {
 	headRef, err := r.repo.Head()
-	utils.CheckIfError(err)
-	log.Debugf("Last commit in '%s' is: %s",
-		utils.GithubLink(r.org, r.name), headRef.Hash())
+	CheckIfError(err)
+	log.Debugf("Last commit in '%s' is: %s", GithubLink(r.org, r.name), headRef.Hash())
 	return headRef.Hash()
 }
 
 // NeedsCommit ...
 func (r Repo) NeedsCommit() bool {
 	worktree, err := r.repo.Worktree()
-	utils.CheckIfError(err)
+	CheckIfError(err)
 
 	status, err := worktree.Status()
-	utils.CheckIfError(err)
+	CheckIfError(err)
 
 	log.Debugf("Current status is: %v", status.IsClean())
 
@@ -147,12 +143,12 @@ func clone(org string, name string, target string, token string) *git.Repository
 		URL:      createGithubURL(org, name),
 		Progress: os.Stdout,
 	})
-	utils.CheckIfError(err)
+	CheckIfError(err)
 
-	log.Debugf("Cloned repository '%s' to '%s'", utils.GithubLink(org, name), target)
+	log.Debugf("Cloned repository '%s' to '%s'", GithubLink(org, name), target)
 	return repo
 }
 
 func createGithubURL(org string, name string) string {
-	return fmt.Sprintf("https://github.com/%s", utils.GithubLink(org, name))
+	return fmt.Sprintf("https://github.com/%s", GithubLink(org, name))
 }

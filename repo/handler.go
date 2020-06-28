@@ -8,8 +8,6 @@ import (
 	"path/filepath"
 
 	log "github.com/sirupsen/logrus"
-
-	"github.com/hostwithquantum/github-org-sync-action/utils"
 )
 
 // Handler ...
@@ -31,7 +29,7 @@ func (h Handler) Sync(target string) {
 			"%s/.github/workflows/%s", target, filepath.Base(file))
 
 		err := copy(file, repoFile)
-		utils.CheckIfError(err)
+		CheckIfError(err)
 
 		log.Debugf("Synced to '%s' to '%s'", file, repoFile)
 	}
