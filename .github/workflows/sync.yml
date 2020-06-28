@@ -9,7 +9,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Sync workflow
-        uses: hostwithquantum/github-org-sync-action@0.5.1
+        uses: hostwithquantum/github-org-sync-action@0.5.3
         with:
             github-user: ${{ secrets.GH_USER }}
             github-email: ${{ secrets.GH_EMAIL }}
