@@ -1,0 +1,35 @@
+name: 'GitHub Organization Sync(er)'
+description: 'A GitHub Action to sync files across repositories'
+inputs:
+  github-user:
+    description: Name of the user to commit files and open PRs.
+    required: true
+  github-email:
+    description: Email of the user to commit files and open PRs.
+    required: true
+  github-access-token:
+    description: An access token (used for clone and push), scope repo.
+    required: true
+  github-org:
+    description: Your Github organization.
+    required: true
+    default: hostwithquantum
+  github-skeleton:
+    description: The base repository to sync files from.
+    required: true
+    default: ansible-skeleton
+  github-repos:
+    description: A (space-delimited) list of repositories to sync to.
+    required: true
+    default: "ansible-weave"
+
+runs:
+  using: 'docker'
+  image: 'docker://docker.pkg.github.com/hostwithquantum/github-org-sync-action/github-org-sync:latest'
+  env:
+    GITHUB_USER: ${{ inputs.github-user }}
+    GITHUB_EMAIL: ${{ inputs.github-email }}
+    GITHUB_ACCESS_TOKEN: ${{ inputs.github-access-token }}
+    GITHUB_ORG: ${{ inputs.github-org }}
+    GITHUB_SKELETON: ${{ inputs.github-skeleton }}
+    GITHUB_REPOS: ${{ inputs.github-repos }}
