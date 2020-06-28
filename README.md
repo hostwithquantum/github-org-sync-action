@@ -2,23 +2,51 @@
 
 # github-org-sync(-action)
 
-`github-org-sync` is a little tool to sync files from a skeleton/template repository to other repositories in your organization. It works within a single organization, but of course it can be used multiple times.
+`github-org-sync(-action)` is a tool to sync files from a skeleton/template repository to other repositories in your organization. It works within a single organization, but of course it can be used multiple times.
+
+It currently syncs `.github/workflows` — more is planned.
 
 Inspiration from:
  - https://github.com/cloudalchemy/auto-maintenance
  - https://github.com/prometheus/prometheus/blob/master/scripts/sync_repo_files.sh
 
-### Status
+## GitHub Action
 
-We currently provide a tool (written in Golang) to do the syncing. We sync files from `.github/workflows` only, more files/directories are planned and will be added when time permits.
+### Inputs
 
-The goal is to offer a GitHub Action as well.
+#### `github-user`
 
-## Getting it
+**Required** Name of the user to commit files and open PRs.
+
+#### `github-email`
+
+**Required** Email of the user to commit files and open PRs.
+
+#### `github-access-token`
+
+**Required** An access token (used for clone and push), scope repo.
+
+#### `github-org`
+
+**Required** Your Github organization. Default: `hostwithquantum`
+
+#### `github-skeleton`
+
+**Required** The base repository to sync files from. Default: `ansible-skeleton`.
+
+#### `github-repos`
+
+**Required** A (space-delimited) list of repositories to sync to. Default: `"ansible-weave"`
+
+## Standalone
+
+If GitHub Actions are not applicable to your environment, you may run the tool without (and e.g. via `cron.d`).
+
+### Getting it
 
 All releases are done using the amazing `goreleaser` in a release workflow in this repository. The workflow validates and builds binaries for different OS' and architectures and a Docker image (amd64) as well.
 
-### Installing
+#### Installing
 
 You may download a release for Mac, Linux or Windows here:
  - https://github.com/hostwithquantum/github-org-sync-action/releases
@@ -28,7 +56,7 @@ To use the Docker image, please follow this link:
 
 Otherwise: `make dev` to build a snapshot.
 
-### Configuration
+#### Configuration
 
  - `github-org-sync` uses environment variables. There is nothing else currently.
  - See [.envrc-dist](.envrc-dist) for necessary configuration.
