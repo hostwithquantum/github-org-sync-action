@@ -8,8 +8,6 @@ import (
 	"github.com/google/go-github/github"
 	log "github.com/sirupsen/logrus"
 
-	"github.com/hostwithquantum/github-org-sync-action/utils"
-
 	"github.com/hostwithquantum/github-org-sync-action/repo"
 )
 
@@ -46,7 +44,7 @@ func main() {
 	// clone skeleton repository
 	skeleton := repo.NewRepo(org, skeletonRepository, currentUser, tmpDirectory)
 
-	skeletonGithub := utils.GithubLink(org, skeletonRepository)
+	skeletonGithub := repo.GithubLink(org, skeletonRepository)
 
 	log.Info("Cloned skeleton")
 
@@ -55,7 +53,7 @@ func main() {
 	for _, repository := range repositories {
 
 		target := repo.NewRepo(org, repository, currentUser, tmpDirectory)
-		githubLink := utils.GithubLink(org, repository)
+		githubLink := repo.GithubLink(org, repository)
 		log.Infof("Cloned: '%s'", githubLink)
 
 		defaultBranch := target.GetDefaultBranch()
@@ -95,5 +93,5 @@ func main() {
 	}
 
 	err := os.RemoveAll(tmpDirectory)
-	utils.CheckIfError(err)
+	repo.CheckIfError(err)
 }

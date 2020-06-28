@@ -5,7 +5,6 @@ import (
 	"fmt"
 
 	"github.com/google/go-github/github"
-	"github.com/hostwithquantum/github-org-sync-action/utils"
 	log "github.com/sirupsen/logrus"
 	"golang.org/x/oauth2"
 )
@@ -46,7 +45,7 @@ func (g Github) CreatePullRequest(repository string, pr *github.NewPullRequest) 
 	}
 
 	// handle other errors
-	utils.CheckIfError(err)
+	CheckIfError(err)
 
 	log.Info(fmt.Sprintf("PR created: %s", pullRequest.GetHTMLURL()))
 }
