@@ -1,5 +1,8 @@
 name: 'GitHub Organization Sync(er)'
 description: 'A GitHub Action to sync files across repositories'
+branding:
+  icon: 'battery-charging'
+  color: 'red'
 inputs:
   github-user:
     description: Name of the user to commit files and open PRs.
