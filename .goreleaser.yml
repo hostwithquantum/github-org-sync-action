@@ -3,7 +3,14 @@ before:
     - go mod tidy
     - go generate ./...
 builds:
-- env:
+- main: ./main.go
+  binary: github-org-sync
+  ldflags: -s -w -X main.exporterVersion={{.Version}}
+  goos:
+  - darwin
+  - linux
+  - windows
+  env:
   - CGO_ENABLED=0
 archives:
 - replacements:
@@ -14,6 +21,16 @@ archives:
     amd64: x86_64
 checksum:
   name_template: 'checksums.txt'
+dockers:
+- binaries:
+  - github-org-sync
+  goos: linux
+  goarch: amd64
+  image_templates:
+  - "docker.pkg.github.com/hostwithquantum/github-org-sync-action:v{{ .Tag }}"
+  - "docker.pkg.github.com/hostwithquantum/github-org-sync-action:v{{ .Major }}"
+  - "docker.pkg.github.com/hostwithquantum/github-org-sync-action:v{{ .Major }}.{{ .Minor }}"
+  - "docker.pkg.github.com/hostwithquantum/github-org-sync-action:latest"
 snapshot:
   name_template: "{{ .Tag }}-next"
 changelog:
