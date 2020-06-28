@@ -1,4 +1,4 @@
-package user
+package repo
 
 // CurrentUser ...
 type CurrentUser struct {

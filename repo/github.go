@@ -5,7 +5,6 @@ import (
 	"fmt"
 
 	"github.com/google/go-github/github"
-	"github.com/hostwithquantum/github-org-sync-action/user"
 	"github.com/hostwithquantum/github-org-sync-action/utils"
 	log "github.com/sirupsen/logrus"
 	"golang.org/x/oauth2"
@@ -13,14 +12,14 @@ import (
 
 // Github ...
 type Github struct {
-	user    user.CurrentUser
+	user    CurrentUser
 	org     string
 	context context.Context
 	client  *github.Client
 }
 
 // NewGithub ...
-func NewGithub(user user.CurrentUser, org string) Github {
+func NewGithub(user CurrentUser, org string) Github {
 	// init context
 	ctx := context.Background()
 

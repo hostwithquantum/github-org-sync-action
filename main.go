@@ -11,7 +11,6 @@ import (
 	"github.com/hostwithquantum/github-org-sync-action/utils"
 
 	"github.com/hostwithquantum/github-org-sync-action/repo"
-	"github.com/hostwithquantum/github-org-sync-action/user"
 )
 
 func init() {
@@ -30,7 +29,7 @@ func main() {
 	log.Info(fmt.Sprintf("From: %s", skeletonRepository))
 
 	// init CurrentUser (for auth)
-	currentUser := user.CurrentUser{
+	currentUser := repo.CurrentUser{
 		Email: os.Getenv("GITHUB_EMAIL"),
 		Name:  os.Getenv("GITHUB_USER"),
 		Token: os.Getenv("GITHUB_ACCESS_TOKEN"),

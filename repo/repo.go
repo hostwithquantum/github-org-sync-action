@@ -7,7 +7,6 @@ import (
 
 	log "github.com/sirupsen/logrus"
 
-	"github.com/hostwithquantum/github-org-sync-action/user"
 	"github.com/hostwithquantum/github-org-sync-action/utils"
 
 	"github.com/go-git/go-git/v5"
@@ -21,13 +20,13 @@ import (
 type Repo struct {
 	org    string
 	name   string
-	user   user.CurrentUser
+	user   CurrentUser
 	target string
 	repo   *git.Repository
 }
 
 // NewRepo ...
-func NewRepo(org string, name string, user user.CurrentUser, tmpDirectory string) Repo {
+func NewRepo(org string, name string, user CurrentUser, tmpDirectory string) Repo {
 
 	cloneDirectory := fmt.Sprintf("%s/%s", tmpDirectory, name)
 
