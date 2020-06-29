@@ -10,6 +10,10 @@ Inspiration from:
  - https://github.com/cloudalchemy/auto-maintenance
  - https://github.com/prometheus/prometheus/blob/master/scripts/sync_repo_files.sh
 
+**You're super excited and need to see how it works?**
+
+https://github.com/hostwithquantum/github-org-sync-action/actions?query=workflow%3Async
+
 ## GitHub Action
 
 This _Action_ is meant to run on a schedule, see the "sync" workflow (`.github/workflows/sync.yml`) in this repository for a minimal demo/working example.
