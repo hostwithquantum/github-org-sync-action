@@ -14,3 +14,4 @@ jobs:
             github-user: ${{ secrets.GH_USER }}
             github-email: ${{ secrets.GH_EMAIL }}
             github-access-token: ${{ secrets.GH_ACCESS_TOKEN }}
+            github-repos: ${{ secrets.GH_REPOS }}
