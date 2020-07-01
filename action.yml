@@ -28,7 +28,7 @@ inputs:
 
 runs:
   using: 'docker'
-  image: 'docker://quay.io/hostwithquantum/github-org-sync:v0.5.3'
+  image: 'docker://quay.io/hostwithquantum/github-org-sync:v0.5.4'
   env:
     GITHUB_USER: ${{ inputs.github-user }}
     GITHUB_EMAIL: ${{ inputs.github-email }}
