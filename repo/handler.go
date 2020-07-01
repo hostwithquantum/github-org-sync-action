@@ -24,9 +24,18 @@ func NewHandler(repository string, baseDirectory string) Handler {
 
 // Sync ...
 func (h Handler) Sync(target string) {
+	dotGithub := filepath.Join(target, ".github")
+	if ensureDirectory(dotGithub) == false {
+		return
+	}
+
+	workflows := filepath.Join(dotGithub, "workflows")
+	if ensureDirectory(workflows) == false {
+		return
+	}
+
 	for _, file := range h.Workflows {
-		repoFile := fmt.Sprintf(
-			"%s/.github/workflows/%s", target, filepath.Base(file))
+		repoFile := filepath.Join(workflows, filepath.Base(file))
 
 		err := copy(file, repoFile)
 		CheckIfError(err)
@@ -35,6 +44,26 @@ func (h Handler) Sync(target string) {
 	}
 
 	log.Debugf("Synced files to '%s'", target)
+}
+
+func ensureDirectory(directory string) bool {
+	stat, err := os.Stat(directory)
+	if err != nil {
+		if os.IsNotExist(err) {
+			err = os.MkdirAll(directory, os.ModePerm)
+		}
+
+		// handle all errors
+		CheckIfError(err)
+		return true
+	}
+
+	if stat.IsDir() {
+		return true
+	}
+
+	log.Errorf("Path '%s' exists, but is not a directory!", directory)
+	return false
 }
 
 func copy(src string, dst string) error {
