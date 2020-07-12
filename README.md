@@ -21,7 +21,7 @@ https://github.com/hostwithquantum/github-org-sync-action/actions?query=workflow
 
 ## GitHub Action
 
-This _Action_ is meant to run on a schedule, see the "sync" workflow (`.github/workflows/sync.yml`) in this repository for a minimal demo/working example.
+This _Action_ is meant to run on a schedule, see [the "sync" workflow (`.github/workflows/sync.yml`)](https://github.com/hostwithquantum/blob/main/.github/workflows/sync.yml) in this repository for a minimal demo/working example.
 
 ### Inputs
 

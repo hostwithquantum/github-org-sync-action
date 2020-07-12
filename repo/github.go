@@ -2,7 +2,6 @@ package repo
 
 import (
 	"context"
-	"fmt"
 
 	"github.com/google/go-github/github"
 	log "github.com/sirupsen/logrus"
@@ -47,7 +46,7 @@ func (g Github) CreatePullRequest(repository string, pr *github.NewPullRequest) 
 	// handle other errors
 	CheckIfError(err)
 
-	log.Info(fmt.Sprintf("PR created: %s", pullRequest.GetHTMLURL()))
+	log.Infof("PR created: %s", pullRequest.GetHTMLURL())
 }
 
 func createAuthorizedClient(context context.Context, token string) *github.Client {

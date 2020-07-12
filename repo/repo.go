@@ -122,7 +122,7 @@ func (r Repo) NeedsCommit() bool {
 	status, err := worktree.Status()
 	CheckIfError(err)
 
-	log.Debugf("Current status is: %v", status.IsClean())
+	log.Debugf("Repo clean?: %v", status.IsClean())
 
 	if status.IsClean() {
 		return false

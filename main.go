@@ -17,6 +17,14 @@ func init() {
 	log.SetLevel(log.DebugLevel)
 }
 
+var gitHubActionVersion = "__REPLACED__"
+
+var motd = `
+ _______________________
+< github-org-sync %s >
+ -----------------------
+`
+
 func main() {
 	org := os.Getenv("GITHUB_ORG")
 	repositories := strings.Split(os.Getenv("GITHUB_REPOS"), " ")
@@ -24,8 +32,12 @@ func main() {
 	// this is the main copy which contains the files we want to sync
 	skeletonRepository := os.Getenv("GITHUB_SKELETON")
 
-	log.Info(fmt.Sprintf("Running for '%s' and syncing to: %s", org, repositories))
-	log.Info(fmt.Sprintf("From: %s", skeletonRepository))
+	fmt.Printf(motd, gitHubActionVersion)
+
+	log.Infof("Running for '%s' and syncing to: %s", org, repositories)
+	log.Infof("From: %s", skeletonRepository)
+
+	_, dryRun := os.LookupEnv("DRY_RUN")
 
 	// init CurrentUser (for auth)
 	currentUser := repo.CurrentUser{
@@ -36,11 +48,11 @@ func main() {
 
 	githubClient := repo.NewGithub(currentUser, org)
 
-	log.Info(fmt.Sprintf("Using: %s (of %s)", currentUser.Email, currentUser.Name))
+	log.Infof("Using: %s (of %s)", currentUser.Email, currentUser.Name)
 
 	tmpDirectory := fmt.Sprintf("./tmp/%s", org)
 
-	log.Info(fmt.Sprintf("Temp files will be created in: %s", tmpDirectory))
+	log.Infof("Temp files will be created in: %s", tmpDirectory)
 
 	// clone skeleton repository
 	skeleton := repo.NewRepo(org, skeletonRepository, currentUser, tmpDirectory)
@@ -75,12 +87,17 @@ func main() {
 		)
 
 		if target.NeedsCommit() != true {
-			log.Info(fmt.Sprintf("Repo '%s' is clean\n", githubLink))
+			log.Infof("Repo '%s' is clean\n", githubLink)
+			continue
+		}
+
+		if dryRun {
+			log.Info("[dry-run] Not committing, pushing or opening a PR.")
 			continue
 		}
 
 		commitMsg := fmt.Sprintf(
-			"Chore: updates to .github/workflows\n\nSee %s@%s",
+			"Chore: automated updates to .github/workflows, templates, ...\n\nSee %s@%s",
 			skeletonGithub,
 			skeleton.GetLastCommit(),
 		)
@@ -103,6 +120,10 @@ func main() {
 		githubClient.CreatePullRequest(repository, newPR)
 	}
 
-	err := os.RemoveAll(tmpDirectory)
-	repo.CheckIfError(err)
+	if !dryRun {
+		err := os.RemoveAll(tmpDirectory)
+		repo.CheckIfError(err)
+	} else {
+		log.Info("[dry-run] Leaving artifacts for inspection")
+	}
 }

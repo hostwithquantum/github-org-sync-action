@@ -5,11 +5,16 @@ before:
 builds:
 - main: ./main.go
   binary: github-org-sync
-  ldflags: -s -w -X main.exporterVersion={{.Version}}
+  ldflags: -s -w -X main.gitHubActionVersion={{.Version}}
   goos:
   - darwin
   - linux
   - windows
+  ignore:
+  - goos: darwin
+    goarch: 386
+  - goos: windows
+    goarch: 386
   env:
   - CGO_ENABLED=0
 archives:

@@ -15,7 +15,7 @@ jobs:
           PROJECT_EMAIL: oss@planetary-quantum.com"
           PROJECT_COMPANY: "Planetary Quantum GmbH"
         with:
-            github-user: ${{ secrets.GH_USER }}
-            github-email: ${{ secrets.GH_EMAIL }}
-            github-access-token: ${{ secrets.GH_ACCESS_TOKEN }}
-            github-repos: ${{ secrets.GH_REPOS }}
+          github-user: ${{ secrets.GH_USER }}
+          github-email: ${{ secrets.GH_EMAIL }}
+          github-access-token: ${{ secrets.GH_ACCESS_TOKEN }}
+          github-repos: ${{ secrets.GH_REPOS }}
