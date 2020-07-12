@@ -10,6 +10,10 @@ jobs:
     steps:
       - name: Sync workflow
         uses: hostwithquantum/github-org-sync-action@0.5.4
+        # for templating
+        env:
+          PROJECT_EMAIL: oss@planetary-quantum.com"
+          PROJECT_COMPANY: "Planetary Quantum GmbH"
         with:
             github-user: ${{ secrets.GH_USER }}
             github-email: ${{ secrets.GH_EMAIL }}

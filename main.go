@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"os"
+	"path/filepath"
 	"strings"
 
 	"github.com/google/go-github/github"
@@ -61,7 +62,17 @@ func main() {
 
 		target.CreateBranch("chore/update-workflows")
 
-		handler.Sync(fmt.Sprintf("%s/%s", tmpDirectory, repository))
+		// sync .github/workflows
+		var workflowDirTarget = filepath.Join(tmpDirectory, repository, ".github", "workflows")
+		handler.Sync(
+			workflowDirTarget,
+			handler.Workflows,
+		)
+
+		handler.Sync(
+			filepath.Join(tmpDirectory, repository),
+			handler.Files,
+		)
 
 		if target.NeedsCommit() != true {
 			log.Info(fmt.Sprintf("Repo '%s' is clean\n", githubLink))
