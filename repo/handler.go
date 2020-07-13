@@ -1,12 +1,13 @@
 package repo
 
 import (
-	"fmt"
 	"io"
 	"io/ioutil"
 	"os"
 	"path/filepath"
+	"strings"
 
+	gucci "github.com/noqcks/gucci/gucci"
 	log "github.com/sirupsen/logrus"
 )
 
@@ -14,33 +15,66 @@ import (
 type Handler struct {
 	Base      string
 	Workflows []string
+	Files     []string
 }
 
 // NewHandler ...
 func NewHandler(repository string, baseDirectory string) Handler {
-	workflows := getWorkflows(fmt.Sprintf("%s/%s/.github/workflows", baseDirectory, repository))
-	return Handler{Base: repository, Workflows: workflows}
+	baseDir := filepath.Join(baseDirectory, repository)
+
+	workflows := getWorkflows(filepath.Join(baseDir, ".github/workflows"))
+	files := getTemplates(baseDir)
+
+	return Handler{
+		Base:      repository,
+		Workflows: workflows,
+		Files:     files,
+	}
 }
 
 // Sync ...
-func (h Handler) Sync(target string) {
-	dotGithub := filepath.Join(target, ".github")
-	if ensureDirectory(dotGithub) == false {
+func (h Handler) Sync(target string, sources []string) {
+	if ensureDirectory(target) == false {
 		return
 	}
 
-	workflows := filepath.Join(dotGithub, "workflows")
-	if ensureDirectory(workflows) == false {
-		return
-	}
+	for _, file := range sources {
+		var repoFile string
 
-	for _, file := range h.Workflows {
-		repoFile := filepath.Join(workflows, filepath.Base(file))
+		if !isTemplate(file) {
+			repoFile = filepath.Join(target, filepath.Base(file))
 
-		err := copy(file, repoFile)
+			err := copy(file, repoFile)
+			CheckIfError(err)
+
+			log.Debugf("Synced from '%s' to '%s'", file, repoFile)
+
+			continue
+		}
+
+		log.Debugf("Working template: %s", file)
+
+		repoFile = filepath.Join(
+			target,
+			strings.TrimSuffix(filepath.Base(file), filepath.Ext(file)),
+		)
+
+		log.Debugf("Generating: %s", repoFile)
+
+		tmpl, err := gucci.LoadTemplateFile(file)
 		CheckIfError(err)
 
-		log.Debugf("Synced to '%s' to '%s'", file, repoFile)
+		writer, err := os.Create(repoFile)
+		CheckIfError(err)
+
+		// GET most/all from env
+		tmplVars := gucci.Env()
+		tmplVars["GITHUB_REPOSITORY"] = filepath.Base(target)
+
+		err = gucci.ExecuteTemplate(tmplVars, writer, tmpl)
+		CheckIfError(err)
+
+		log.Debugf("Created %s from template %s", repoFile, file)
 	}
 
 	log.Debugf("Synced files to '%s'", target)
@@ -87,9 +121,17 @@ func copy(src string, dst string) error {
 }
 
 func getWorkflows(path string) []string {
-	var workflows []string
-
 	log.Debugf("Fetch workflows in: %s", path)
+	return getFiles(path, ".yml")
+}
+
+func getTemplates(path string) []string {
+	log.Debugf("Fetch templates from: %s", path)
+	return getFiles(path, ".tpl")
+}
+
+func getFiles(path string, ext string) []string {
+	var fetchedFiles []string
 
 	files, err := ioutil.ReadDir(path)
 	if err != nil {
@@ -97,8 +139,20 @@ func getWorkflows(path string) []string {
 	}
 
 	for _, file := range files {
-		workflows = append(workflows, fmt.Sprintf("%s/%s", path, file.Name()))
+		if filepath.Ext(file.Name()) != ext {
+			continue
+		}
+
+		fetchedFiles = append(fetchedFiles, filepath.Join(path, file.Name()))
 	}
 
-	return workflows
+	return fetchedFiles
+}
+
+func isTemplate(path string) bool {
+	if filepath.Ext(path) == ".tpl" {
+		return true
+	}
+
+	return false
 }
